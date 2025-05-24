@@ -31,7 +31,7 @@ jobs:
       - uses: initdc/upload-artifact@feat/artifact-per-file
         with:
           artifact-per-file: true
-          artifact-name-rule: ${{ runner.os }}${ext}
+          artifact-name-rule: ${{ runner.os }}
           path: build/distributions/*
       - name: Upload reports on failure
         if: ${{ failure() }}
