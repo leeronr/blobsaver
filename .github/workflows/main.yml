@@ -31,8 +31,11 @@ jobs:
       - uses: initdc/upload-artifact@feat/artifact-per-file
         with:
           artifact-per-file: true
-          artifact-name-rule: "macOS-build${ext}"
+          # Replace hyphens in runner.os for the artifact name
+          artifact-name-rule: ${{ runner.os_safe }}${ext} # Use a new variable for the sanitized name
           path: build/distributions/*
+      - name: Sanitize runner.os for artifact name
+        run: echo "runner_os_safe=$(echo ${{ runner.os }} | sed 's/-/_/g')" >> $GITHUB_ENV
       - name: Upload reports on failure
         if: ${{ failure() }}
         uses: actions/upload-artifact@v4
