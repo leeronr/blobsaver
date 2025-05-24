@@ -28,14 +28,12 @@ jobs:
         with:
           arguments: build --no-daemon --scan
           dependency-graph: generate-and-submit
-      - uses: initdc/upload-artifact@feat/artifact-per-file
+      - name: Upload macOS Distributions
+        uses: actions/upload-artifact@v4 # Changed action to official v4
         with:
-          artifact-per-file: true
-          # Replace hyphens in runner.os for the artifact name
-          artifact-name-rule: ${{ runner.os_safe }}${ext} # Use a new variable for the sanitized name
-          path: build/distributions/*
-      - name: Sanitize runner.os for artifact name
-        run: echo "runner_os_safe=$(echo ${{ runner.os }} | sed 's/-/_/g')" >> $GITHUB_ENV
+          name: macOS-distributions # Give it a clear name
+          path: build/distributions/* # This will upload all files in build/distributions as one artifact
+                                       # It will be downloaded as a single zip file from the UI
       - name: Upload reports on failure
         if: ${{ failure() }}
         uses: actions/upload-artifact@v4
@@ -59,4 +57,4 @@ jobs:
           automatic_release_tag: "${{ env.VERSION }}"
           prerelease: false
           draft: true
-          files: "**"
+          files: "**" # This will include the 'macOS-distributions.zip' file downloaded by 'Get artifacts'
